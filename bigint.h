@@ -5,6 +5,7 @@
 #include <iostream>
 #include <map>
 
+
 namespace Dodecahedron {
     class Bigint {
     private:
@@ -35,6 +36,12 @@ namespace Dodecahedron {
         Bigint operator*(long long const &);
         Bigint &operator*=(int const &);
 
+        //Division
+        Bigint operator/(Bigint const &);
+        Bigint &operator/=(Bigint const &);
+        Bigint operator/(long long const &);
+        Bigint &operator/=(int const &);
+
         //Compare
         bool operator<(const Bigint &) const;
         bool operator>(const Bigint &) const;
@@ -62,6 +69,7 @@ namespace Dodecahedron {
         //Trivia
         int digits() const;
         int trailing_zeros() const;
+
     private:
         int segment_length(int) const;
         Bigint pow(int const &, std::map<int, Bigint> &);

@@ -1,7 +1,8 @@
 #include <string>
 #include <sstream>
 #include <map>
-#include "Bigint.h"
+#include "bigint.h"
+
 
 namespace Dodecahedron {
 
@@ -23,13 +24,13 @@ namespace Dodecahedron {
         }
 
         while (value) {
-            number.push_back(value % base);
+            number.push_back((const int &) (value % base));
             value /= base;
         }
     }
 
     Bigint::Bigint(std::string stringInteger) {
-        int size = stringInteger.length();
+        int size = (int) stringInteger.length();
 
         positive = (stringInteger[0] != '-');
 
@@ -163,7 +164,7 @@ namespace Dodecahedron {
         Bigint c;
         for (it1 = number.begin(); it1 != number.end(); ++it1) {
             for (it2 = b.number.begin(); it2 != b.number.end(); ++it2) {
-                c.skip = (int) (it1 - number.begin()) + (int) (it2 - b.number.begin());
+                c.skip = (unsigned int) ((int) (it1 - number.begin()) + (int) (it2 - b.number.begin()));
                 c += (long long) (*it1) * (*it2);
             }
         }
@@ -190,11 +191,56 @@ namespace Dodecahedron {
         long long sum = 0;
         while (it != number.end()) {
             sum += (long long) (*it) * b;
-            *it = sum % base;
+            *it = (int) (sum % base);
             sum /= base;
             ++it;
         }
-        if (sum) number.push_back(sum);
+        if (sum) number.push_back((const int &) sum);
+
+        return *this;
+    }
+
+    //Division
+    Bigint Bigint::operator/(Bigint const &b) {
+        if (b == Bigint(0))
+            throw std::runtime_error("Division by 0");
+        std::vector<int>::iterator it1;
+        std::vector<int>::const_iterator it2;
+        Bigint c;
+        for (it1 = number.begin(); it1 != number.end(); ++it1) {
+            for (it2 = b.number.begin(); it2 != b.number.end(); ++it2) {
+                c.skip = (unsigned int) ((int) (it1 - number.begin()) + (int) (it2 - b.number.begin()));
+                c += (long long) (*it1) / (*it2);
+            }
+        }
+        c.skip = 0;
+
+        return c;
+    }
+
+    Bigint &Bigint::operator/=(Bigint const &b) {
+        *this = *this / b;
+
+        return *this;
+    }
+
+    Bigint Bigint::operator/(long long const &b) {
+        Bigint c = *this;
+        c /= b;
+
+        return c;
+    }
+
+    Bigint &Bigint::operator/=(int const &b) {
+        std::vector<int>::iterator it = number.begin();
+        long long sum = 0;
+        while (it != number.end()) {
+            sum += (long long) (*it) / b;
+            *it = (int) (sum % base);
+            sum /= base;
+            ++it;
+        }
+        if (sum) number.push_back((const int &) sum);
 
         return *this;
     }
@@ -234,7 +280,7 @@ namespace Dodecahedron {
 
         if (number.size() < a.number.size()) return -1 * check;
         if (number.size() > a.number.size()) return check;
-        for (unsigned int i(number.size() - 1); i >= 0; --i) {
+        for (unsigned int i((unsigned int) (number.size() - 1)); i >= 0; --i) {
             if (number[i] < a.number[i]) return -1 * check;
             if (number[i] > a.number[i]) return check;
         }
@@ -271,7 +317,7 @@ namespace Dodecahedron {
         number.clear();
         long long t = a;
         do {
-            number.push_back(t % base);
+            number.push_back((const int &) (t % base));
             t /= base;
         } while (t != 0);
 
@@ -285,7 +331,7 @@ namespace Dodecahedron {
 
     //Trivia
     int Bigint::digits() const {
-        int segments = number.size();
+        int segments = (int) number.size();
 
         if (segments == 0) return 0;
 
