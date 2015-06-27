@@ -3,6 +3,7 @@
   * [Addition](#addition)
   * [Subtraction](#subtraction)
   * [Multiplication](#multiplication)
+  * [Division](#division)
   * [Allocation](#allocation)
   * [Comparison](#comparison)
   * [Access](#access)
